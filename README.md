@@ -1,6 +1,6 @@
 # Desafio 1 do Ignite Trilha NodeJS
 
-<img alt="Ignite" src="./assets/cover-node.png" />
+<img alt="Ignite" src="./assets/cover-node.js.png" />
 
 <h3 align="center">
   Desafio 01: Conceitos do Node.js
