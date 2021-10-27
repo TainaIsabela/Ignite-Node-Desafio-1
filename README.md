@@ -48,7 +48,7 @@ Tudo isso para cada usuário em específico (o `username` será passado pelo hea
 - Clone este repositório
 
 ```
-> git clone https://github.com/TainaIsabela/Ignite-Node
+> git clone https://github.com/TainaIsabela/Ignite-Node-Desafio-1
 ```
 
 - Navegue até o diretório principal do projeto
