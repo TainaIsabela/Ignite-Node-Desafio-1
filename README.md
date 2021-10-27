@@ -9,7 +9,7 @@
 <p align="center">“Uma mente que se abre a uma nova ideia, jamais voltará ao seu tamanho original.”</blockquote>
 
 <p align="center">
-  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/TainaIsabela/Ignite-Conceitos-Nodejs?style=flat">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/TainaIsabela/Ignite-Node-Desafio-1?style=flat">
 
   <a href="https://rocketseat.com.br">
     <img alt="Made by Tainá Isabela" src="https://img.shields.io/badge/made%20by-Tainá%20Isabela-orange">
