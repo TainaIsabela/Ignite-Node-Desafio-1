@@ -1,115 +1,80 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
 
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuid } = require("uuid");
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 
-const users = [];
+const repositories = [];
 
-function checksExistsUserAccount(request, response, next) {
-  const { username } = request.headers;
+function checksExistsRepository(request, response, next) {
 
-  const user = users.find((user) => username === user.username);
-
-  if (!user) {
-    return response.status(404).json({ error: "User not found!" });
-  }
-
-  request.user = user;
-
-  return next();
-}
-
-function checksExistsUserTodo(request, response, next) {
   const { id } = request.params;
-  const { user } = request;
 
-  const todos = user.todos;
+  repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-  const todo = todos.find(todo => id === todo.id);
-
-  if (!todo) {
-    return response.status(404).json({ error: "Todo not found!" });
+  if (repositoryIndex < 0) {
+    return response.status(404).json({ error: "Repository not found" });
   }
 
-  request.todo = todo;
+  request.repositoryIndex = repositoryIndex;
 
   return next();
 }
 
-app.post('/users', (request, response) => {
-  const { name, username } = request.body;
-
-  const userFound = users.find((user) => username === user.username);
-
-  if (userFound) {
-    return response.status(400).json({ error: "User already exists!" });
-  }
-
-  const user = {
-    id: uuidv4(),
-    name,
-    username,
-    todos: []
-  }
-
-  users.push(user);
-
-  return response.status(201).json(user);
+app.get("/repositories", (request, response) => {
+  return response.json(repositories);
 });
 
-app.get('/todos', checksExistsUserAccount, (request, response) => {
-  const { user } = request;
+app.post("/repositories", (request, response) => {
 
-  return response.status(200).json(user.todos);
-});
+  const { title, url, techs } = request.body;
 
-app.post('/todos', checksExistsUserAccount, (request, response) => {
-  const { title, deadline } = request.body;
-  const { user } = request;
-
-  const todo = {
-    id: uuidv4(),
+  const repository = {
+    id: uuid(),
     title,
-    done: false,
-    deadline: new Date(deadline),
-    created_at: new Date()
-  }
+    url,
+    techs,
+    likes: 0
+  };
 
-  user.todos.push(todo);
+  repositories.push(repository);
 
-  return response.status(201).json(todo);
+  return response.status(201).json(repository);
 });
 
-app.put('/todos/:id', checksExistsUserAccount, checksExistsUserTodo, (request, response) => {
-  const { title, deadline } = request.body;
-  const { todo } = request;
+app.put("/repositories/:id", checksExistsRepository, (request, response) => {
 
-  todo.title = title;
-  todo.deadline = deadline;
+  const { title, url, techs } = request.body;
 
-  return response.status(201).json(todo);
+  const { repositoryIndex } = request;
+
+  const repository = { ...repositories[repositoryIndex], title, url, techs };
+
+  repositories[repositoryIndex] = repository;
+
+  return response.json(repository);
 });
 
-app.patch('/todos/:id/done', checksExistsUserAccount, checksExistsUserTodo, (request, response) => {
-  const { id } = request.params;
-  const { todo } = request;
+app.delete("/repositories/:id", checksExistsRepository, (request, response) => {
 
-  todo.done = true
+  const { repositoryIndex } = request;
 
-  return response.status(201).json(todo);
+  repositories.splice(repositoryIndex, 1);
+
+  return response.status(204).send();
 });
 
-app.delete('/todos/:id', checksExistsUserAccount, checksExistsUserTodo, (request, response) => {
-  const { user, todo } = request;
+app.post("/repositories/:id/like", checksExistsRepository, (request, response) => {
 
-  user.todos.splice(todo.id, 1);
+  const { repositoryIndex } = request;
 
-  return response.status(204).json(user.todos);
+  const repository = repositories[repositoryIndex];
+
+  repository.likes++;
+
+  return response.json(repository);
 });
 
 module.exports = app;
